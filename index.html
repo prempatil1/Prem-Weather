@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PremWeather</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(270deg, #ff6b6b, #5f27cd, #1dd1a1);
+      background-size: 600% 600%;
+      animation: gradientMove 10s ease infinite;
+      overflow: hidden;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Stylish moving name */
+    .bg-text {
+      position: absolute;
+      top: 20%;
+      font-size: 5rem;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.08);
+      white-space: nowrap;
+      animation: moveText 12s linear infinite;
+      font-style: italic;
+      text-transform: uppercase;
+    }
+
+    @keyframes moveText {
+      from { transform: translateX(100%); }
+      to { transform: translateX(-100%); }
+    }
+
+    /* Weather container */
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 20px 30px;
+      border-radius: 12px;
+      text-align: center;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(12px);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    input {
+      padding: 10px;
+      width: 80%;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #ee5253;
+    }
+
+    #weatherResult {
+      margin-top: 15px;
+      font-size: 1.2rem;
+    }
+
+    img {
+      width: 64px;
+      height: 64px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .bg-text {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-text">Prem Patil</div>
+
+  <div class="container">
+    <h1>PremWeather</h1>
+    <input type="text" id="city" placeholder="Enter city name" />
+    <button onclick="getWeather()">Get Weather</button>
+    <div id="weatherResult"></div>
+  </div>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById('city').value;
+      const apiKey = '55c148aa9a824ad5a45180217250309';
+      const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`;
+
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('City not found');
+        }
+        const data = await response.json();
+
+        document.getElementById('weatherResult').innerHTML = `
+          <h3>${data.location.name}, ${data.location.country}</h3>
+          <p>Temperature: ${data.current.temp_c}°C</p>
+          <p>Condition: ${data.current.condition.text}</p>
+          <img src="https:${data.current.condition.icon}" alt="Weather Icon" />
+        `;
+      } catch (error) {
+        document.getElementById('weatherResult').innerHTML = `<p style="color:red;">${error.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
